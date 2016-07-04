@@ -2191,7 +2191,8 @@ def create_autospec(spec, spec_set=False, instance=False, _parent=None,
         # descriptors don't have a spec
         # because we don't know what type they return
         _kwargs = {}
-    elif not _callable(spec):
+    elif not _callable(spec) and not isinstance(spec, (classmethod,
+                                                       staticmethod)):
         Klass = NonCallableMagicMock
     elif is_type and instance and not _instance_callable(spec):
         Klass = NonCallableMagicMock
