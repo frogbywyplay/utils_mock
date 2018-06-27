@@ -347,6 +347,9 @@ def _setup_func(funcopy, mock):
 
     funcopy.assert_called_with = assert_called_with
     funcopy.assert_called_once_with = assert_called_once_with
+    funcopy.assert_not_called = assert_not_called
+    funcopy.assert_called = assert_called
+    funcopy.assert_called_once = assert_called_once
     funcopy.assert_has_calls = assert_has_calls
     funcopy.assert_any_call = assert_any_call
     funcopy.reset_mock = reset_mock
@@ -863,6 +866,36 @@ class NonCallableMock(Base):
                    self.call_count)
             raise AssertionError(msg)
         return self.assert_called_with(*args, **kwargs)
+
+
+    def assert_not_called(_mock_self):
+        """assert that the mock was never called.
+        """
+        self = _mock_self
+        if self.call_count != 0:
+            msg = ("Expected '%s' to not have been called. Called %s times." %
+                   (self._mock_name or 'mock', self.call_count))
+            raise AssertionError(msg)
+
+
+    def assert_called(_mock_self):
+        """assert that the mock was called at least once
+        """
+        self = _mock_self
+        if self.call_count == 0:
+            msg = ("Expected '%s' to have been called." %
+                   self._mock_name or 'mock')
+            raise AssertionError(msg)
+
+
+    def assert_called_once(_mock_self):
+        """assert that the mock was called only once.
+        """
+        self = _mock_self
+        if not self.call_count == 1:
+            msg = ("Expected '%s' to have been called once. Called %s times." %
+                   (self._mock_name or 'mock', self.call_count))
+            raise AssertionError(msg)
 
 
     def assert_has_calls(self, calls, any_order=False):
